@@ -1,5 +1,5 @@
 # DAMT ![Build](https://github.com/someone-stole-my-name/DAMT/workflows/Build/badge.svg)
-Delete your tweets before a specific date
+Delete your tweets after X number days
 
 ### Usage:
 ```
