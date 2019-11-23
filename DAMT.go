@@ -23,14 +23,15 @@ type Config struct {
 	APISecretKey      string `json:"APISecretKey"`
 	AccessToken       string `json:"AccessToken"`
 	AccessTokenSecret string `json:"AccessTokenSecret"`
+	Spare []string `json:"Spare,omitempty"`
 }
 
-func LoadCredentialsFrom(ConfigFile string) (client *twittergo.Client, err error) {
+func LoadConfigFrom(ConfigFile string) (client *twittergo.Client, config *Config, err error) {
 	credentials, err := ioutil.ReadFile(ConfigFile)
 	if err != nil {
 		return
 	}
-	config := Config{}
+
 	if err = json.Unmarshal(credentials, &config); err != nil {
 		return
 	}
@@ -91,10 +92,12 @@ func main() {
 		max_id  uint64
 		query   url.Values
 		results *twittergo.Timeline
+		config	*Config
 	)
 
 	args = parseArgs()
-	if client, err = LoadCredentialsFrom(args.ConfigFile); err != nil {
+
+	if client, config, err = LoadConfigFrom(args.ConfigFile); err != nil {
 		Usage()
 		log.Fatalf("Could not parse config file: %v\n", err)
 	}
@@ -155,6 +158,13 @@ func main() {
 			break
 		}
 		for _, tweet := range *results {
+			if contains(config.Spare, tweet.IdStr()) {
+				fmt.Printf("Skipping: %v\n", tweet.IdStr())
+				max_id = tweet.Id() - 1
+				total++
+				continue;
+			}
+
 			var days int = int(time.Since(tweet.CreatedAt()).Hours() / 24)
 
 			if days >= args.Days {
@@ -185,6 +195,15 @@ func main() {
 var Usage = func() {
 	fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 	flag.PrintDefaults()
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
 
 func yesNo() bool {
