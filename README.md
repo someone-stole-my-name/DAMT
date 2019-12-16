@@ -24,9 +24,13 @@ Delete tweets older than X days
 #### ConfigFile
 ```
 {
-    "APIKey":"xxxx",
-    "APISecretKey":"xxxx",
-    "AccessToken":"xxxx",
-    "AccessTokenSecret":"xxxx"
+    "APIKey":"String",
+    "APISecretKey":"String",
+    "AccessToken":"String",
+    "AccessTokenSecret":"String",
+    "Spare": [
+        "TweetId as String"
+    ],
+    "DeleteReplies": true
 }
 ```

@@ -24,6 +24,7 @@ type Config struct {
 	AccessToken       string `json:"AccessToken"`
 	AccessTokenSecret string `json:"AccessTokenSecret"`
 	Spare []string `json:"Spare,omitempty"`
+	DeleteReplies bool `json:"DeleteReplies"`
 }
 
 func LoadConfigFrom(ConfigFile string) (client *twittergo.Client, config *Config, err error) {
@@ -124,6 +125,9 @@ func main() {
 	query = url.Values{}
 	query.Set("count", fmt.Sprintf("%v", count))
 	query.Set("screen_name", user.ScreenName())
+	if config.DeleteReplies {
+		query.Set("exclude_replies", "false")
+	}
 	total := 0
 
 	for {
