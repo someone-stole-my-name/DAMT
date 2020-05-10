@@ -17,4 +17,4 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Build
-      run: cd $HOME/go/src/github.com/$GITHUB_REPOSITORY && go build .
+      run: go build .
